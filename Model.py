@@ -12,20 +12,24 @@ class Model:
         self.steps = 0
         self.game_over = False
         self.filename = 'scores.txt'
-        self.current_time = datetime.datetime.now(tz=None).strftime("%Y-%m-%d %H:%M:%S")
+
+    @staticmethod
+    def time_to_score():
+        # Fetch time
+        return datetime.datetime.now(tz=None).strftime("%Y-%m-%d %H:%M:%S")
 
     def new_number(self):
-        ''' New PC number '''
+        # New PC number
         return random.randint(self.minimum, self.maximum)
 
     def write_score_to_file(self, name, score):
         if os.path.exists(self.filename):
             '''File exists'''
             with open(self.filename, 'a', encoding='utf-8') as f:
-                f.write(name + ';' + str(score) + ';' + str(self.current_time) + '\n')
+                f.write(name + ';' + str(score) + ';' + str(self.time_to_score()) + '\n')
         else:
             with open(self.filename, 'w', encoding='utf-8') as f:
-                f.write(name + ';' + str(score) + ';' + str(self.current_time) + '\n')
+                f.write(name + ';' + str(score) + ';' + str(self.time_to_score()) + '\n')
 
     def read_score_file(self):
         scores = []
@@ -37,5 +41,4 @@ class Model:
                     scores.append(score.split(';'))
         else:
             scores = None
-
-        return scores
+        return sorted(scores, key=lambda x: (float(x[1]), x[2]))
